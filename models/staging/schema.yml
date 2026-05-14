@@ -6,18 +6,32 @@ models:
     columns:
       - name: customer_id
         description: "Unique customer identifier"
+        tests:
+          - unique
+          - not_null
       - name: first_name
         description: "Customer first name (trimmed)"
       - name: last_name
         description: "Customer last name (trimmed)"
       - name: email
         description: "Customer email (lowercased, non-null)"
+        tests:
+          - not_null
+          - unique
       - name: age
         description: "Customer age (valid range 0-120)"
+        tests:
+          - not_null
       - name: status
         description: "Customer status (normalized to lowercase)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['active', 'inactive']
       - name: created_at
         description: "Account creation date"
+        tests:
+          - not_null
       - name: country
         description: "Customer country code (uppercased)"
 
@@ -26,61 +40,126 @@ models:
     columns:
       - name: product_id
         description: "Unique product identifier"
+        tests:
+          - unique
+          - not_null
       - name: product_name
         description: "Product name (non-null, trimmed)"
+        tests:
+          - not_null
       - name: category
         description: "Product category (normalized to lowercase)"
+        tests:
+          - not_null
       - name: price
         description: "Product price (positive values only)"
+        tests:
+          - not_null
       - name: stock_qty
         description: "Stock quantity"
+        tests:
+          - not_null
       - name: created_at
         description: "Product creation date"
+        tests:
+          - not_null
 
   - name: stg_orders
     description: "Cleaned order data - valid amounts, dates, customer references"
     columns:
       - name: order_id
         description: "Unique order identifier (non-null)"
+        tests:
+          - unique
+          - not_null
       - name: customer_id
         description: "Valid customer reference"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
       - name: total_amount
         description: "Order total (positive values only)"
+        tests:
+          - not_null
       - name: status
         description: "Order status (normalized to lowercase)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['pending', 'completed', 'cancelled']
       - name: order_date
         description: "Order date (no future dates)"
+        tests:
+          - not_null
       - name: payment_method
         description: "Payment method (normalized to lowercase)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['credit_card', 'paypal', 'bank_transfer']
 
   - name: stg_order_items
     description: "Cleaned order items - valid quantities, recalculated totals"
     columns:
       - name: item_id
         description: "Unique item identifier"
+        tests:
+          - unique
+          - not_null
       - name: order_id
         description: "Valid order reference (no orphans)"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_orders')
+              field: order_id
       - name: product_id
         description: "Valid product reference"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_products')
+              field: product_id
       - name: quantity
         description: "Item quantity (positive values only)"
+        tests:
+          - not_null
       - name: unit_price
         description: "Price per unit"
+        tests:
+          - not_null
       - name: line_total
         description: "Recalculated total (quantity * unit_price)"
+        tests:
+          - not_null
 
   - name: stg_events
     description: "Cleaned event data - deduplicated, valid types, no future timestamps"
     columns:
       - name: event_id
         description: "Unique event identifier (deduplicated)"
+        tests:
+          - unique
+          - not_null
       - name: customer_id
         description: "Valid customer reference (non-null)"
+        tests:
+          - not_null
       - name: event_type
         description: "Valid event type only"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['page_view', 'add_to_cart', 'purchase', 'login', 'logout']
       - name: event_timestamp
         description: "Event timestamp (no future timestamps)"
+        tests:
+          - not_null
       - name: page
         description: "Page URL path"
       - name: session_id
         description: "Session identifier"
+        tests:
+          - not_null
