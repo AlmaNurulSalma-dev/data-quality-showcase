@@ -1,0 +1,114 @@
+version: 2
+
+models:
+  - name: dim_customers
+    description: "Customer dimension - one row per active customer with enriched attributes"
+    columns:
+      - name: customer_key
+        description: "Surrogate key"
+      - name: customer_id
+        description: "Natural key - original customer ID"
+      - name: full_name
+        description: "Concatenated first and last name"
+      - name: email
+        description: "Customer email"
+      - name: age
+        description: "Customer age"
+      - name: age_group
+        description: "Derived age group bucket"
+      - name: region
+        description: "Derived region from country"
+      - name: status
+        description: "Customer status (active only)"
+
+  - name: dim_products
+    description: "Product dimension - one row per product with enriched attributes"
+    columns:
+      - name: product_key
+        description: "Surrogate key"
+      - name: product_id
+        description: "Natural key - original product ID"
+      - name: product_name
+        description: "Product name"
+      - name: category
+        description: "Product category (normalized)"
+      - name: price
+        description: "Product price"
+      - name: price_tier
+        description: "Derived price tier (Budget/Economy/Standard/Premium/Luxury)"
+      - name: stock_status
+        description: "Derived stock status"
+
+  - name: dim_dates
+    description: "Date dimension - complete calendar table 2023-2027"
+    columns:
+      - name: date_key
+        description: "Integer date key (YYYYMMDD)"
+      - name: full_date
+        description: "Full date value"
+      - name: year
+        description: "Year number"
+      - name: quarter
+        description: "Quarter number (1-4)"
+      - name: month_number
+        description: "Month number (1-12)"
+      - name: month_name
+        description: "Month name"
+      - name: day_name
+        description: "Day of week name"
+      - name: is_weekend
+        description: "1 if weekend, 0 if weekday"
+
+  - name: fct_orders
+    description: "Orders fact table - one row per order"
+    columns:
+      - name: order_key
+        description: "Surrogate key"
+      - name: order_id
+        description: "Natural key - original order ID"
+      - name: customer_key
+        description: "Foreign key to dim_customers"
+      - name: date_key
+        description: "Foreign key to dim_dates"
+      - name: total_amount
+        description: "Order total amount"
+      - name: order_status
+        description: "Order status"
+      - name: payment_method
+        description: "Payment method used"
+
+  - name: fct_order_items
+    description: "Order items fact table - one row per line item"
+    columns:
+      - name: item_key
+        description: "Surrogate key"
+      - name: item_id
+        description: "Natural key - original item ID"
+      - name: order_key
+        description: "Foreign key to fct_orders"
+      - name: product_key
+        description: "Foreign key to dim_products"
+      - name: quantity
+        description: "Item quantity"
+      - name: unit_price
+        description: "Price per unit"
+      - name: line_total
+        description: "Recalculated line total"
+
+  - name: fct_events
+    description: "Events fact table - one row per event"
+    columns:
+      - name: event_key
+        description: "Surrogate key"
+      - name: event_id
+        description: "Natural key - original event ID"
+      - name: customer_key
+        description: "Foreign key to dim_customers"
+      - name: date_key
+        description: "Foreign key to dim_dates"
+      - name: event_type
+        description: "Type of event"
+      - name: event_timestamp
+        description: "Full event timestamp"
+      - name: time_of_day
+        description: "Derived time of day bucket"
