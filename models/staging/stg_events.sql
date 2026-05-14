@@ -1,20 +1,8 @@
 -- stg_events.sql
--- Cleans raw events data:
---   ✅ Removes duplicate event_ids (keeps first occurrence)
---   ✅ Filters out null customer_ids
---   ✅ Filters out invalid event types
---   ✅ Filters out future timestamps
---   ✅ Only keeps events with valid customer references
-
 with source as (
     select * from {{ source('raw', 'raw_events') }}
 ),
 
-valid_customers as (
-    select customer_id from {{ ref('stg_customers') }}
-),
-
--- Allowed event types
 valid_event_types as (
     select 'page_view'    as event_type union all
     select 'add_to_cart'  as event_type union all
@@ -23,7 +11,6 @@ valid_event_types as (
     select 'logout'       as event_type
 ),
 
--- Deduplicate event_ids
 deduplicated as (
     select *
     from (
@@ -44,29 +31,18 @@ cleaned as (
         e.event_id,
         e.customer_id,
         e.event_type,
-
-        -- Cast timestamp
-        datetime(e.timestamp)                   as event_timestamp,
-
+        datetime(e.timestamp)   as event_timestamp,
         e.page,
         e.session_id
 
     from deduplicated e
 
-    -- Only keep events with valid customer references
-    inner join valid_customers vc
-        on e.customer_id = vc.customer_id
-
-    -- Only keep valid event types
     inner join valid_event_types vet
         on e.event_type = vet.event_type
 
     where
-        -- Filter null customer_ids
         e.customer_id is not null
-
-        -- Filter future timestamps
-        and datetime(e.timestamp) <= datetime('now')
+        and datetime(e.timestamp) <= datetime('now', 'localtime')
 )
 
 select * from cleaned
