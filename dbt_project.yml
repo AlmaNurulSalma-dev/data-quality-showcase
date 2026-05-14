@@ -19,7 +19,7 @@ clean-targets:
 models:
   data_quality_showcase:
     staging:
-      +materialized: view
+      +materialized: table
       +schema: staging
     marts:
       +materialized: table
