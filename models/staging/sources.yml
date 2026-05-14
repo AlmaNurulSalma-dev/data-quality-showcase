@@ -1,0 +1,90 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw data files with intentional quality issues"
+    schema: main
+    tables:
+      - name: raw_customers
+        description: "Raw customer data with duplicates, nulls, invalid ages"
+        columns:
+          - name: customer_id
+            description: "Customer identifier (may have duplicates)"
+          - name: first_name
+            description: "Customer first name (may be null)"
+          - name: last_name
+            description: "Customer last name"
+          - name: email
+            description: "Customer email (may be null or invalid)"
+          - name: age
+            description: "Customer age (may be negative or >120)"
+          - name: status
+            description: "Customer status (inconsistent casing)"
+          - name: created_at
+            description: "Account creation date"
+          - name: country
+            description: "Customer country code"
+
+      - name: raw_products
+        description: "Raw product data with negative prices and null names"
+        columns:
+          - name: product_id
+            description: "Product identifier"
+          - name: product_name
+            description: "Product name (may be null)"
+          - name: category
+            description: "Product category (inconsistent casing)"
+          - name: price
+            description: "Product price (may be negative or zero)"
+          - name: stock_qty
+            description: "Stock quantity"
+          - name: created_at
+            description: "Product creation date"
+
+      - name: raw_orders
+        description: "Raw order data with nulls, invalid references, future dates"
+        columns:
+          - name: order_id
+            description: "Order identifier (may be null)"
+          - name: customer_id
+            description: "Customer reference (may not exist)"
+          - name: total_amount
+            description: "Order total (may be negative)"
+          - name: status
+            description: "Order status (inconsistent casing)"
+          - name: order_date
+            description: "Order date (may be future date)"
+          - name: payment_method
+            description: "Payment method used"
+
+      - name: raw_order_items
+        description: "Raw order items with orphaned records and calculation errors"
+        columns:
+          - name: item_id
+            description: "Item identifier"
+          - name: order_id
+            description: "Order reference (may be orphaned)"
+          - name: product_id
+            description: "Product reference"
+          - name: quantity
+            description: "Item quantity (may be zero or negative)"
+          - name: unit_price
+            description: "Price per unit"
+          - name: line_total
+            description: "Total for line (may not match qty * price)"
+
+      - name: raw_events
+        description: "Raw event data with null IDs and invalid event types"
+        columns:
+          - name: event_id
+            description: "Event identifier (may have duplicates)"
+          - name: customer_id
+            description: "Customer reference (may be null)"
+          - name: event_type
+            description: "Type of event (may be invalid)"
+          - name: timestamp
+            description: "Event timestamp (may be future)"
+          - name: page
+            description: "Page URL path"
+          - name: session_id
+            description: "Session identifier"
