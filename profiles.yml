@@ -8,3 +8,4 @@ data_quality_showcase:
       schema: "main"
       schemas_and_paths:
         main: "C:\\Users\\kinet\\OneDrive\\Documents\\PROJECT-ALMAAA\\data-quality-showcase\\data_quality.db"
+      schema_directory: "C:\\Users\\kinet\\OneDrive\\Documents\\PROJECT-ALMAAA\\data-quality-showcase"
