@@ -4,7 +4,7 @@ data_quality_showcase:
     dev:
       type: sqlite
       threads: 1
-      database: "database"        # SQLite database file name (no .db extension needed)
-      schema: "main"              # SQLite uses 'main' as the default schema
+      database: "data_quality"
+      schema: "main"
       schemas_and_paths:
-        main: "{{ env_var('DBT_PROFILES_DIR', '~/.dbt') }}/data_quality.db"
+        main: "C:\\Users\\kinet\\OneDrive\\Documents\\PROJECT-ALMAAA\\data-quality-showcase\\data_quality.db"
