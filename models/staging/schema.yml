@@ -1,0 +1,86 @@
+version: 2
+
+models:
+  - name: stg_customers
+    description: "Cleaned customer data - deduplicated, valid ages, non-null emails"
+    columns:
+      - name: customer_id
+        description: "Unique customer identifier"
+      - name: first_name
+        description: "Customer first name (trimmed)"
+      - name: last_name
+        description: "Customer last name (trimmed)"
+      - name: email
+        description: "Customer email (lowercased, non-null)"
+      - name: age
+        description: "Customer age (valid range 0-120)"
+      - name: status
+        description: "Customer status (normalized to lowercase)"
+      - name: created_at
+        description: "Account creation date"
+      - name: country
+        description: "Customer country code (uppercased)"
+
+  - name: stg_products
+    description: "Cleaned product data - valid prices, non-null names"
+    columns:
+      - name: product_id
+        description: "Unique product identifier"
+      - name: product_name
+        description: "Product name (non-null, trimmed)"
+      - name: category
+        description: "Product category (normalized to lowercase)"
+      - name: price
+        description: "Product price (positive values only)"
+      - name: stock_qty
+        description: "Stock quantity"
+      - name: created_at
+        description: "Product creation date"
+
+  - name: stg_orders
+    description: "Cleaned order data - valid amounts, dates, customer references"
+    columns:
+      - name: order_id
+        description: "Unique order identifier (non-null)"
+      - name: customer_id
+        description: "Valid customer reference"
+      - name: total_amount
+        description: "Order total (positive values only)"
+      - name: status
+        description: "Order status (normalized to lowercase)"
+      - name: order_date
+        description: "Order date (no future dates)"
+      - name: payment_method
+        description: "Payment method (normalized to lowercase)"
+
+  - name: stg_order_items
+    description: "Cleaned order items - valid quantities, recalculated totals"
+    columns:
+      - name: item_id
+        description: "Unique item identifier"
+      - name: order_id
+        description: "Valid order reference (no orphans)"
+      - name: product_id
+        description: "Valid product reference"
+      - name: quantity
+        description: "Item quantity (positive values only)"
+      - name: unit_price
+        description: "Price per unit"
+      - name: line_total
+        description: "Recalculated total (quantity * unit_price)"
+
+  - name: stg_events
+    description: "Cleaned event data - deduplicated, valid types, no future timestamps"
+    columns:
+      - name: event_id
+        description: "Unique event identifier (deduplicated)"
+      - name: customer_id
+        description: "Valid customer reference (non-null)"
+      - name: event_type
+        description: "Valid event type only"
+      - name: event_timestamp
+        description: "Event timestamp (no future timestamps)"
+      - name: page
+        description: "Page URL path"
+      - name: session_id
+        description: "Session identifier"
