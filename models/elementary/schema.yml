@@ -1,0 +1,66 @@
+version: 2
+
+models:
+  - name: data_quality_score
+    description: "Daily data quality scores broken down by dimension"
+    columns:
+      - name: score_date
+        description: "Date of the quality score calculation"
+      - name: total_tests
+        description: "Total number of tests run"
+      - name: passed_tests
+        description: "Number of tests that passed"
+      - name: failed_tests
+        description: "Number of tests that failed"
+      - name: overall_score
+        description: "Overall quality score (0-100)"
+      - name: quality_rating
+        description: "Quality rating (EXCELLENT/GOOD/FAIR/POOR/CRITICAL)"
+      - name: completeness_score
+        description: "Completeness dimension score"
+      - name: uniqueness_score
+        description: "Uniqueness dimension score"
+      - name: validity_score
+        description: "Validity dimension score"
+      - name: consistency_score
+        description: "Consistency dimension score"
+      - name: referential_integrity_score
+        description: "Referential integrity dimension score"
+      - name: timeliness_score
+        description: "Timeliness dimension score"
+      - name: accuracy_score
+        description: "Accuracy dimension score"
+
+  - name: quality_trends
+    description: "30-day quality score trends with moving averages"
+    columns:
+      - name: score_date
+        description: "Date of the quality score"
+      - name: overall_score
+        description: "Overall quality score (0-100)"
+      - name: moving_avg_7d
+        description: "7-day moving average of quality score"
+      - name: score_change
+        description: "Change in score from previous day"
+      - name: trend_direction
+        description: "Trend direction (improving/declining/stable)"
+      - name: quality_rating
+        description: "Quality rating for the day"
+
+  - name: dim_data_quality
+    description: "Data quality dimension - test coverage per model"
+    columns:
+      - name: quality_key
+        description: "Surrogate key"
+      - name: model_name
+        description: "dbt model name"
+      - name: layer
+        description: "Model layer (staging/marts)"
+      - name: test_count
+        description: "Total tests for this model"
+      - name: passing_tests
+        description: "Passing tests for this model"
+      - name: model_quality_score
+        description: "Quality score for this model (0-100)"
+      - name: quality_tier
+        description: "Quality tier (PERFECT/EXCELLENT/GOOD/FAIR/NEEDS WORK)"
